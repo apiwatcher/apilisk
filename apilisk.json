@@ -1,0 +1,6 @@
+{
+  "host": "https://api.kja-testcase.stg.apiwatcher.com",
+  "port": 443,
+  "client_id": "40be7dcde272423fba9c0c1a8d9f3856",
+  "client_secret": "6e40c380ad0f4edbb47a54edbe8843b9"
+}
