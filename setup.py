@@ -30,7 +30,7 @@ setup(
         'Intended Audience :: Developers',
         'Environment :: Console',
         'Natural Language :: English',
-        'Operating System :: OS Independent'
+        'Operating System :: OS Independent',
         'License :: OSI Approved :: MIT License',
         'Programming Language :: Python :: 2',
         'Programming Language :: Python :: 2.7',
