@@ -25,17 +25,32 @@ def main():
     )
     parser.add_argument(
         "-c", "--config-file", default="~/.apilisk.json",
-        help="Path to configuration file"
+        help="Path to configuration file."
     )
     parser.add_argument(
-        "-j", "--junit", help="Provide output in junit format",
+        "-j", "--junit", help="Provide output in junit format.",
+        action="store_true"
+    )
+    parser.add_argument(
+        "-o", "--junit-output-file", help="Path to junit output file",
+        type=str, default="./output.xml"
+    )
+    parser.add_argument(
+        "-i", "--include-data", help="Insert data into results.",
+        action="store_true"
+    )
+    parser.add_argument(
+        "-u", "--upload", help="Upload data to platform.",
         action="store_true"
     )
 
-
     args = parser.parse_args()
-
     apilisk.printer.verbosity = args.verbose
+
+    include_data=False
+    if args.include_data:
+        include_data = True
+
 
     # Load configuration
     try:
@@ -46,11 +61,16 @@ def main():
         project_cfg = client.get_project_config(args.project)
 
         runner = Runner(project_cfg, args.dataset)
-        results = runner.run_project(cfg)
+        results = runner.run_project(
+            include_data=include_data, debug=True
+        )
 
         if args.junit:
             fmt = JunitFormatter(project_cfg, results)
             fmt.to_file("./output.xml")
+
+        if args.upload:
+            client.upload_results(project_cfg, results)
 
     except IOError as e:
         eprint("Could not open configuration file at {0}: {1}".format(

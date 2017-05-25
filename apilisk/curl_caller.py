@@ -153,7 +153,7 @@ class CurlCaller(object):
         # Decode using the encoding we figured out.
         return self._response_content_buffer.getvalue().decode(encoding)
 
-    def handle_and_get_report(self):
+    def handle_and_get_report(self, include_data=False):
         """
         Calls the stuff and gets report for the call
         """
@@ -163,14 +163,16 @@ class CurlCaller(object):
             error_code = pex[0]
             message = pex[1]
             if error_code == PycurlErrorCodesEnum.HTTP_RETURNED_ERROR:
-                return self._get_report_from_response(self.conn)
+                return self._get_report_from_response(
+                    self.conn, include_data
+                )
             else:
                 return self._get_report_from_error(message)
         else:
-            return self._get_report_from_response(self.conn)
+            return self._get_report_from_response(self.conn, include_data)
 
 
-    def _get_report_from_response(self, response):
+    def _get_report_from_response(self, response, include_data=False):
         response_content = self._get_response_data_as_unicode()
         errors = []
         if response.getinfo(response.RESPONSE_CODE) not in self.validation["return_codes"]:
@@ -186,7 +188,6 @@ class CurlCaller(object):
             )
 
         body = None
-
         try:
             body = json.loads(response_content)
         except ValueError as e:
@@ -197,7 +198,7 @@ class CurlCaller(object):
                         "id": "not_json",
                         "message": (
                             "There is json schema set, but response "
-                            "content is not a valid json document"
+                            "content is not a valid json document."
                         ),
                         "data": e.message
                     }
@@ -218,8 +219,6 @@ class CurlCaller(object):
                         errrs.append(
 
                         )
-
-
                 if errs:
                     errors.append(
                         {
@@ -233,7 +232,7 @@ class CurlCaller(object):
             "action": "call_request",
             "data": {
                 "headers": self._response_headers,
-                "body": body,
+                "body": body if include_data else None,
                 "status_code": response.getinfo(
                     response.RESPONSE_CODE
                 ),

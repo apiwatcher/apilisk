@@ -44,7 +44,8 @@ setup(
         'Jinja2',
         'jsonschema',
         'junit-xml',
-        'Pygments'
+        'Pygments',
+        'pytz'
     ],
     extras_require={
         'dev': ['setuptools'],
