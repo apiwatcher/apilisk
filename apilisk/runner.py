@@ -34,7 +34,7 @@ class Runner(object):
 
             if self.dataset == None:
                 raise ObjectNotFound(
-                    "Dataset with id {0} has not been found".format(
+                    u"Dataset with id {0} has not been found".format(
                         dataset_id
                     )
                 )
@@ -52,7 +52,7 @@ class Runner(object):
         failed_count = 0
         vprint(
             1, None,
-            "## Starting project {0} ({1})".format(
+            u"## Starting project {0} ({1})".format(
                 self.project_name, self.project_hash
             )
         )
@@ -69,13 +69,13 @@ class Runner(object):
         if failed_count > 0:
             vprint(
                 1, Colors.RED,
-                "## Failed {0} testcases out of {1} in {2} sec.".format(
+                u"## Failed {0} testcases out of {1} in {2} sec.".format(
                     failed_count, total_count, duration_sec
                 )
             )
         else:
             vprint(
-                1, Colors.GREEN, "## Success in {0} sec".format(duration_sec)
+                1, Colors.GREEN, u"## Success in {0} sec".format(duration_sec)
             )
 
         return {
@@ -106,7 +106,7 @@ class Runner(object):
         time_start = datetime.now()
 
         vprint(
-            1, None, "# {0} ... ".format(
+            1, None, u"# {0} ... ".format(
                 self.testcases[tc_id]["name"]
             ), True
         )
@@ -129,13 +129,13 @@ class Runner(object):
 
         if status == 'success':
             vprint(
-                1, Colors.GREEN, "\r# {0} ... SUCCESS".format(
+                1, Colors.GREEN, u"\r# {0} ... SUCCESS".format(
                     self.testcases[tc_id]["name"]
                 )
             )
         else:
             vprint(
-                1, Colors.RED, "\r# {0} ... FAILED".format(
+                1, Colors.RED, u"\r# {0} ... FAILED".format(
                     self.testcases[tc_id]["name"]
                 )
             )

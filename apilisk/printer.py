@@ -24,7 +24,7 @@ class Colors(object):
 def eprint(to_print):
     """Print to stderr, regardless on verbose status"""
     print(
-        "{0}{1}{2}".format(Colors.RED, to_print, Colors.ENDC), file=sys.stderr
+        u"{0}{1}{2}".format(Colors.RED, to_print, Colors.ENDC), file=sys.stderr
     )
 
 def vprint(needed_verbosity, color, to_print, allow_line_update=False):
@@ -34,10 +34,10 @@ def vprint(needed_verbosity, color, to_print, allow_line_update=False):
     if verbosity >= needed_verbosity:
 
         if color is not None:
-            to_print = "{0}{1}{2}".format(color, to_print, Colors.ENDC)
+            to_print = u"{0}{1}{2}".format(color, to_print, Colors.ENDC)
 
         if allow_line_update:
-            print(to_print, end="")
+            print(u""+to_print, end="")
             sys.stdout.flush()
         else:
-            print(to_print)
+            print(u""+to_print)

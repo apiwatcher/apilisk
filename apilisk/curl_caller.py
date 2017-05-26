@@ -100,7 +100,7 @@ class CurlCaller(object):
 
         # Set headers
         header_array = [
-            "{0}: {1}".format(key, value)
+            u"{0}: {1}".format(key, value)
             for key, value in data_after_substitution["headers"].iteritems()
         ]
         self.conn.setopt(pycurl.HTTPHEADER, header_array)
@@ -119,15 +119,15 @@ class CurlCaller(object):
 
         query_list = []
         for (key, value) in query_params.iteritems():
-            query_list.append("{0}={1}".format(key, value))
+            query_list.append(u"{0}={1}".format(key, value))
 
         question_mark_pos = url.find("?")
         if question_mark_pos == -1:
-            return("{0}?{1}".format(url, "&".join(query_list)))
+            return(u"{0}?{1}".format(url, "&".join(query_list)))
         elif question_mark_pos == len(url) - 1 or url[-1] == "&":
-            return("{0}{1}".format(url, "&".join(query_list)))
+            return(u"{0}{1}".format(url, "&".join(query_list)))
         else:
-            return("{0}&{1}".format(url, "&".join(query_list)))
+            return(u"{0}&{1}".format(url, "&".join(query_list)))
 
     def _get_response_data_as_unicode(self):
         """
@@ -180,7 +180,7 @@ class CurlCaller(object):
             errors.append(
                 {
                     "id": "wrong_status_code",
-                    "message": "Status code of response was {0}, but allowed status codes are {1}".format(
+                    "message": u"Status code of response was {0}, but allowed status codes are {1}".format(
                         response.getinfo(response.RESPONSE_CODE),
                         ",".join([str(x) for x in self.validation["return_codes"]])
                     )
