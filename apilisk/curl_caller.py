@@ -5,6 +5,7 @@ import copy
 import json
 from StringIO import StringIO
 from datetime import datetime
+from jsonschema import Draft4Validator, ValidationError
 
 import pycurl
 from apilisk.utils import substitute_variables_recursively
@@ -182,8 +183,7 @@ class CurlCaller(object):
                     "message": "Status code of response was {0}, but allowed status codes are {1}".format(
                         response.getinfo(response.RESPONSE_CODE),
                         ",".join([str(x) for x in self.validation["return_codes"]])
-                    ),
-                    "data": None
+                    )
                 }
             )
 
@@ -199,8 +199,7 @@ class CurlCaller(object):
                         "message": (
                             "There is json schema set, but response "
                             "content is not a valid json document."
-                        ),
-                        "data": e.message
+                        )
                     }
                 )
         else:
@@ -214,17 +213,10 @@ class CurlCaller(object):
                 try:
                     validator.validate(body)
                 except ValidationError:
-                    errors = sorted(validator.iter_errors(body), key=lambda e: e.path)
-                    for err in errors:
-                        errrs.append(
-
-                        )
-                if errs:
                     errors.append(
                         {
                             "id": "not_valid",
                             "message": "Response is not valid against provided json schema",
-                            "data": errs
                         }
                     )
 
