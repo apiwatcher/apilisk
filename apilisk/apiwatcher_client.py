@@ -21,7 +21,7 @@ class ApiwatcherClient:
             self.agent_id = apilisk_cfg["agent_id"]
             self.client = Client(
                 apilisk_cfg["host"], apilisk_cfg["port"],
-                verify_certificate=False
+                verify_certificate=True
             )
 
             vprint(
@@ -62,7 +62,8 @@ class ApiwatcherClient:
         """
         vprint(
             1, None,
-            "### Getting configuraton of project {0} ... ".format(project_hash)
+            "### Getting configuraton of project {0} ... ".format(project_hash),
+            True
         )
 
         rsp = self.client.get(
@@ -99,7 +100,7 @@ class ApiwatcherClient:
         """Upload data to platform"""
         vprint(
             1, None,
-            "### Uploading data to Apiwatcher platform ..."
+            "### Uploading data to Apiwatcher platform ...", True
         )
 
         rsp = self.client.post(
