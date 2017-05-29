@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import json
 from junit_xml import TestSuite, TestCase
 
@@ -7,13 +9,13 @@ class JunitFormatter(object):
     def __init__(self, project_cfg, project_result):
         """Initialize the stuff"""
         self.testcases = {
-            str(item["id"]): item for item in project_cfg["testcases"]
+            unicode(item["id"]): item for item in project_cfg["testcases"]
         }
 
         test_cases = []
         for case in project_result["results"]:
             tc = TestCase(
-                self.testcases[str(case["testcase_id"])]["name"],
+                u"{0}".format(self.testcases[str(case["testcase_id"])]["name"]),
                 elapsed_sec=case["duration_sec"]
             )
             if case["status"] == "failed":
@@ -23,7 +25,7 @@ class JunitFormatter(object):
             test_cases.append(tc)
 
         self.test_suite = TestSuite(
-            name="Project {0}".format(project_cfg["project_name"]),
+            name=u"Project {0}".format(project_cfg["project_name"]),
             test_cases=test_cases
         )
 
@@ -32,4 +34,8 @@ class JunitFormatter(object):
         Output project results to specified filename
         """
         with open(filename, 'w') as f:
-            TestSuite.to_file(f, [self.test_suite], prettyprint=True)
+            f.write(
+                TestSuite.to_xml_string(
+                    [self.test_suite], prettyprint=True, encoding="utf-8"
+                ).encode("utf-8")
+            )
