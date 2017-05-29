@@ -18,7 +18,7 @@ with open(path.join(here, 'README.rst'), encoding='utf-8') as f:
 
 setup(
     name='Apilisk',
-    version='0.1.3',
+    version='0.1.4',
     description='Remote test runner for Apiwatcher platform',
     long_description=long_description,
     url='https://github.com/apiwatcher/apilisk',
@@ -39,7 +39,7 @@ setup(
     keywords='http client apiwatcher apilisk',
     packages=find_packages(exclude=['tests']),
     install_requires=[
-        'Apiwatcher-Pyclient',
+        'Apiwatcher-Pyclient>=0.1.2',
         'pycurl',
         'Jinja2',
         'jsonschema',
