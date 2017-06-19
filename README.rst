@@ -42,7 +42,12 @@ At first you need to have a team in Apiwatcher, so sign/log in.
 You need to create a project and some testcases, otherwise there is nothing to
 run. :) And finally you need to have a credentials (Client ID and
 Client secret). This you can find under team settings - create a new pair and
-download the configuration file for Apilisk.
+download the configuration file for Apilisk or copy paste the command with
+apilisk init, which will create the file for you.
+
+.. code-block:: python
+
+  apilisk init --client-secret SECRET --client-id ID --agent-id "My agent"
 
 Example file:
 
@@ -60,4 +65,4 @@ And now just run it :)
 
 .. code-block:: shell
 
-  apilisk -c apilisk.json -u -v 1 -d YOUR_DATASET_ID YOUR_PROJECT_HASH
+  apilisk run -c apilisk.json -u -v 1 -d YOUR_DATASET_ID -p YOUR_PROJECT_HASH

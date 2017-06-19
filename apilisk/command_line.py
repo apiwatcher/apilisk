@@ -9,15 +9,92 @@ from apilisk.printer import eprint, vprint
 from apilisk.apiwatcher_client import ApiwatcherClient
 from apilisk.junit_formatter import JunitFormatter
 
+def _check_args(args):
+
+
+    if args.action == "init":
+        # Must all be filled
+        if (
+            args.client_id is None or
+            args.agent_id is None or
+            args.client_secret is None
+        ):
+            eprint("Options --client-id, --client-secret and --agent-id must "
+                "be set for init action."
+            )
+            exit(1)
+
+    elif args.action == "run":
+        cfg = {}
+        if (args.client_id is not None or args.client_secret is not None
+        ):
+            cfg = _get_config_data(
+                args.client_id, args.client_secret, args.agent_id
+            )
+        else:
+            try:
+                with open(args.config_file) as cfg_file:
+                    cfg = json.load(cfg_file)
+            except IOError as e:
+                eprint("Could not open configuration file at {0}: {1}".format(
+                    args.config_file, e.message
+                ))
+                exit(1)
+
+        if args.project is None:
+            eprint("Project hash (-p) is mandatory for action 'run'")
+            exit(1)
+
+        return cfg
+
+    else:
+        eprint(
+            u"Unknown action {0}, allowed values are run or init".format(
+            args.action
+        ))
+        parser.print_usage()
+        exit(1)
+
+
+def _get_config_data(client_id, client_secret, name):
+    return {
+        "host": "https://api2.apiwatcher.com",
+        "port": 443,
+        "client_id": client_id,
+        "client_secret": client_secret,
+        "agent_id": name
+    }
+
+def _create_config_file(data, filename):
+
+    with open(filename, 'w') as outfile:
+        json.dump(data, outfile)
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        "project", default=None,
+        "action", default=None,
+        help="What to do - init or run."
+    )
+    parser.add_argument(
+        "--client-id", default=None, type=str,
+        help="Client id for init"
+    )
+    parser.add_argument(
+        "--client-secret", default=None, type=str,
+        help="Client id for init"
+    )
+    parser.add_argument(
+        "--agent-id", default="NOT SET", type=str,
+        help="Agent id for init"
+    )
+    parser.add_argument(
+        "-p", "--project", default=None,
         help="Hash of the project."
     )
     parser.add_argument(
         "-d", "--dataset", type=int,
-        help="Id of dataset to use. None if not dataset should be used."
+        help="Id of dataset to use. None if no dataset should be used."
     )
     parser.add_argument(
         "-v", "--verbose", type=int, default=1,
@@ -47,37 +124,33 @@ def main():
     args = parser.parse_args()
     apilisk.printer.verbosity = args.verbose
 
-    include_data=False
-    if args.include_data:
-        include_data = True
+    cfg = _check_args(args)
 
-
-    # Load configuration
-    try:
-        with open(args.config_file) as cfg_file:
-            cfg = json.load(cfg_file)
-
-        client = ApiwatcherClient(cfg)
-        project_cfg = client.get_project_config(args.project)
-
-        runner = Runner(project_cfg, args.dataset)
-        results = runner.run_project(
-            include_data=include_data, debug=True
+    # Switch according to action
+    if args.action == "init":
+        _create_config_file(
+            _get_config_data(
+                args.client_id, args.client_secret, args.agent_id
+            ),
+            args.config_file
         )
+    elif args.action == "run":
+        try:
+            client = ApiwatcherClient(cfg)
+            project_cfg = client.get_project_config(args.project)
 
-        if args.junit:
-            fmt = JunitFormatter(project_cfg, results)
-            fmt.to_file("./output.xml")
+            runner = Runner(project_cfg, args.dataset)
+            results = runner.run_project(
+                include_data=args.include_data, debug=True
+            )
 
-        if args.upload:
-            client.upload_results(project_cfg, results)
+            if args.junit:
+                fmt = JunitFormatter(project_cfg, results)
+                fmt.to_file("./output.xml")
 
-    except IOError as e:
-        eprint("Could not open configuration file at {0}: {1}".format(
-            args.config_file, e.message
-        ))
-        parser.print_usage()
-        exit(1)
-    except ApiliskException as e:
-        eprint(e.message)
-        exit(1)
+            if args.upload:
+                client.upload_results(project_cfg, results)
+
+        except ApiliskException as e:
+            eprint(e.message)
+            exit(1)
