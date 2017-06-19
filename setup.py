@@ -18,7 +18,7 @@ with open(path.join(here, 'README.rst'), encoding='utf-8') as f:
 
 setup(
     name='Apilisk',
-    version='0.1.4',
+    version='0.2.0',
     description='Remote test runner for Apiwatcher platform',
     long_description=long_description,
     url='https://github.com/apiwatcher/apilisk',
@@ -26,7 +26,7 @@ setup(
     author_email='karel@jakubec.name',
     license='MIT',
     classifiers=[
-        'Development Status :: 3 - Alpha',
+        'Development Status :: 4 - Beta',
         'Intended Audience :: Developers',
         'Environment :: Console',
         'Natural Language :: English',
