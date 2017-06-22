@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import json
 import argparse
+from os.path import expanduser
 
 import apilisk.printer
 from apilisk.runner import Runner
@@ -10,8 +11,6 @@ from apilisk.apiwatcher_client import ApiwatcherClient
 from apilisk.junit_formatter import JunitFormatter
 
 def _check_args(args):
-
-
     if args.action == "init":
         # Must all be filled
         if (
@@ -66,7 +65,6 @@ def _get_config_data(client_id, client_secret, name):
     }
 
 def _create_config_file(data, filename):
-
     with open(filename, 'w') as outfile:
         json.dump(data, outfile)
 
@@ -101,7 +99,8 @@ def main():
         help="0 = no output, 1 = what is being done, 2 = data"
     )
     parser.add_argument(
-        "-c", "--config-file", default="~/.apilisk.json",
+        "-c", "--config-file",
+        default="{0}/.apilisk.json".format(expanduser("~")),
         help="Path to configuration file."
     )
     parser.add_argument(
