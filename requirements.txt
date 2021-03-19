@@ -1,6 +1,6 @@
 Apiwatcher-Pyclient>=0.1.2
 appdirs==1.4.3
-Jinja2==2.9.6
+Jinja2==2.11.3
 jsonschema==2.6.0
 junit-xml==1.7
 MarkupSafe==1.0
